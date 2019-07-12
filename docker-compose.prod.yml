@@ -1,0 +1,35 @@
+version: '3.2'
+
+services:
+  django_web:
+    labels:
+      com.example.service: "web"
+      com.example.description: "Use for the main web process"
+    build:
+      context: ./bookme/docker_compose/django/
+      dockerfile: Dockerfile
+    image: bookme_django_web:1.0
+    depends_on:
+      - db
+      - es
+      - kibana
+    command: ["./docker_compose/django/wait_for_postgres.sh"]
+    environment:
+      PRODUCTION: 'true'
+      LOGSTASH_HOST: logstash     
+    expose:
+      - "5959"
+    logging:
+      driver: "json-file"
+    volumes:
+      - ./bookme:/app
+  nginx:
+    restart: always
+    container_name: nginx_server
+    build:
+      context: ./bookme/docker_compose/nginx/
+      dockerfile: Dockerfile
+    depends_on:
+      - django_web
+    ports:
+      - "0.0.0.0:80:80"
