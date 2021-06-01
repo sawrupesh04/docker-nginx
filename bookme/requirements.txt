@@ -47,4 +47,4 @@ six==1.10.0
 Tars==0.6.0
 typing==3.6.1
 uritemplate==3.0.0
-urllib3==1.21.1
+urllib3==1.26.5
